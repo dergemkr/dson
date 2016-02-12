@@ -27,6 +27,26 @@ class _Cyclical {
   const _Cyclical();
 }
 
+/// Annotation to state that a class or interface has subtypes.
+class HasSubtypes {
+  /// Key under which the subtype identifier is stored.
+  final String key;
+  /// Subtypes of this type.
+  final List types;
+
+  const HasSubtypes(this.key, this.types);
+}
+
+/// Annotation to state what type the class is a subtype of.
+class IsSubtype {
+  /// Super type of this subtype.
+  final Type of;
+  /// Identifier used to specify this type under the type key.
+  final String id;
+
+  const IsSubtype(this.id, this.of);
+}
+
 /// This annotation specifies the object can be serialized
 class _Serializable extends Reflectable {
   const _Serializable() : super(
