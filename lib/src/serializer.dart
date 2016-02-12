@@ -98,7 +98,6 @@ Object _serializeObject(obj, depth, exclude, fieldName) {
 
   if(classMirror.isEnum) {
     return obj.index;
-//    return {'index': obj.index, 'name': obj.toString().split(".")[1]};
   }
 
   Map result = new Map<String, dynamic>();
