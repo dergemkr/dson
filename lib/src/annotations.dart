@@ -10,26 +10,13 @@ class _Ignore {
 }
 
 /**
- * Function used to get if the variable should be ignored
- */
-typedef bool IgnoreIfFunction({var user, var orig_val, var current_val});
-
-/**
- * Annotation that tells parser to ignore the variable if the [ignoreIfFunction] returns true
- */
-class IgnoreIf {
-  final IgnoreIfFunction ignoreIfFunction;
-  const IgnoreIf(this.ignoreIfFunction);
-}
-
-/**
  * Annotation class to describe properties of a class member.
  */
 class SerializedName {
   final String name;
-  
+
   const SerializedName(this.name);
-  
+
   String toString() => "DartsonProperty: Name: ${name}";
 }
 
