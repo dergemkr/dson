@@ -2,6 +2,9 @@ part of dson;
 
 Logger _serLog = new Logger('object_mapper_serializer');
 
+const _hasSubtypesExaminer = const _MetadataExaminer<HasSubtypes>();
+const _isSubtypeExaminer = const _MetadataExaminer<IsSubtype>();
+
 /// Variable that save all the serialized objects. If an object
 /// has been serilized in the past is going to be saved by this variable
 /// and is not going to be serialized again.
@@ -98,6 +101,8 @@ Object _serializeObject(obj, depth, exclude, fieldName) {
 
   if(classMirror.isEnum) {
     return obj.index;
+  } else if (_hasSubtypesExaminer.type(classMirror).hasAnnotation) {
+    throw new Exception("Cannot serialize base type ${classMirror.simpleName}");
   }
 
   Map result = new Map<String, dynamic>();
@@ -122,6 +127,16 @@ Object _serializeObject(obj, depth, exclude, fieldName) {
       }
     }
 
+    // TODO: Throw helpful errors here, probably with line numbers
+    if (_isSubtypeExaminer.type(classMirror).hasAnnotation) {
+      var subtype = _isSubtypeExaminer.type(classMirror).value;
+      var superType = serializable.reflectType(subtype.of);
+      var typeKey = _hasSubtypesExaminer.type(superType).value.key;
+      if (result.containsKey(typeKey)) {
+        throw new Exception('Type key "$typeKey" conflicts with field');
+      }
+      result[typeKey] = subtype.id;
+    }
   } else {
     result = _serializedStack[obj];
   }
