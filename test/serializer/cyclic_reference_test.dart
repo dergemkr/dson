@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 main() {
   group('ciclical test with id >', () {
-  
+
     var manager = new Employee()
       ..id = 1
       ..firstName = 'Jhon'
@@ -16,7 +16,7 @@ main() {
         ..city = 'Miami'
         ..country = 'USA'
         ..owner = manager;
-  
+
     var employee = new Employee()
       ..id = 2
       ..firstName = 'Luis'
@@ -28,21 +28,21 @@ main() {
         ..city = 'Miami'
         ..country = 'USA'
         ..owner = employee;
-       
+
     test('serialize Employee without address and manager', () {
       expect(toJson(employee), '{"id":2,"firstName":"Luis","lastName":"Vargas","address":{"id":2},"manager":{"id":1}}');
     });
     test('serialize employee.address without owner', () {
       expect(toJson(employee.address), '{"id":2,"street":"some street","city":"Miami","country":"USA","owner":{"id":2}}');
     });
-    
+
     test('serialize employee with address and no manager', () {
       expect(toJson(employee, depth: 'address'),
              '{"id":2,"firstName":"Luis","lastName":"Vargas",'
                 '"address":{"id":2,"street":"some street","city":"Miami","country":"USA","owner":{"id":2}},'
                 '"manager":{"id":1}}');
     });
-    
+
     test('serialize employee with address, manager and manager address', () {
       expect(toJson(employee, depth: [{'manager': 'address'}, 'address']),
              '{"id":2,"firstName":"Luis","lastName":"Vargas",'
@@ -52,9 +52,9 @@ main() {
                   '"address":{"id":1,"street":"some street","city":"Miami","country":"USA","owner":{"id":1}}}}');
     });
   });
-  
+
   group('Ciclical Test without id >', () {
-  
+
     var manager = new Employee2()
       ..firstName = 'Jhon'
       ..lastName = 'Doe';
@@ -63,7 +63,7 @@ main() {
         ..city = 'Miami'
         ..country = 'USA'
         ..owner = manager;
-  
+
     var employee = new Employee2()
       ..firstName = 'Luis'
       ..lastName = 'Vargas'
@@ -73,7 +73,7 @@ main() {
         ..city = 'Miami'
         ..country = 'USA'
         ..owner = employee;
-       
+
     test('serialize Employee without address and manager', () {
       expect(toJson(employee), matches(
           r'\{'
@@ -93,7 +93,7 @@ main() {
               r'"owner":\{"hashcode":\d+\},'
               r'"hashcode":\d+'));
     });
-    
+
     test('serialize employee with address and no manager', () {
       expect(toJson(employee, depth: ['address']),
              matches(
@@ -102,7 +102,7 @@ main() {
                     r'"manager":\{"hashcode":\d+\},'
                  r'"hashcode":\d+\}'));
     });
-    
+
     test('serialize employee with address, manager and manager address', () {
       expect(toJson(employee, depth: [{'manager': ['address']}, 'address']),
              matches(
@@ -132,10 +132,10 @@ main() {
                 r'\}'));
     });
   });
-  
+
   group('ciclical list test with id >', () {
-    
-    
+
+
     var student1 = new Student()
         ..id = 1
         ..name = 'student1',
@@ -157,15 +157,15 @@ main() {
         ..id = 3
         ..beginDate = new DateTime.utc(2015, 1, 3)
         ..students = [student1, student3];
-    
+
     student1.courses = [course1, course3];
     student2.courses = [course1, course2];
     student3.courses = [course2, course3];
-    
+
     test('serializing student1 without courses', () {
       expect(toJson(student1), '{"id":1,"name":"student1","courses":[{"id":1},{"id":3}]}');
     });
-    
+
     test('serializing student1 with courses', () {
       expect(toJson(student1, depth: ['courses']),
           '{'
@@ -177,7 +177,7 @@ main() {
             ']'
           '}');
     });
-    
+
     test('serializing student1.courses without students', () {
       expect(toJson(student1.courses),
           '['
@@ -198,9 +198,9 @@ main() {
               '{"id":3,"name":"student3","courses":[{"id":2},{"id":3}]}'
             ']}'
           ']');
-    }); 
+    });
   });
-        
+
 }
 
 @cyclical
@@ -209,9 +209,9 @@ class Employee {
   int id;
   String firstName;
   String lastName;
-  
+
   Address address;
-  
+
   Employee manager;
 }
 
@@ -223,7 +223,7 @@ class Address {
   String city;
   String country;
   String postalCode;
-  
+
   Employee owner;
 }
 
@@ -232,9 +232,9 @@ class Address {
 class Employee2 {
   String firstName;
   String lastName;
-  
+
   Address2 address;
-  
+
   Employee2 manager;
 }
 
@@ -245,7 +245,7 @@ class Address2 {
   String city;
   String country;
   String postalCode;
-  
+
   Employee2 owner;
 }
 
@@ -254,7 +254,7 @@ class Address2 {
 class Student {
   int id;
   String name;
-  
+
   List<Course> courses;
 }
 
@@ -262,8 +262,8 @@ class Student {
 @serializable
 class Course {
   int id;
-  
+
   DateTime beginDate;
-  
+
   List<Student> students;
 }

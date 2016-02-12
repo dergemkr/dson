@@ -2,7 +2,7 @@ part of dson;
 
 Logger _serLog = new Logger('object_mapper_serializer');
 
-/// Variable that save all the serialized objects. If an object 
+/// Variable that save all the serialized objects. If an object
 /// has been serilized in the past is going to be saved by this variable
 /// and is not going to be serialized again.
 Map<Object, Map> _serializedStack = {};
@@ -14,16 +14,16 @@ bool isPrimitive(value) => value is String || value is num || value is bool || v
 bool isSimple(value) => isPrimitive(value) || value is DateTime || value is List || value is Map;
 
 /// Serializes the [object] to a JSON string.
-/// 
+///
 /// Parameters:
-/// 
-/// [depth] :  determines how deep is going to be the serialization and to avoid cyclical object reference stack overflow. 
+///
+/// [depth] :  determines how deep is going to be the serialization and to avoid cyclical object reference stack overflow.
 /// [exclude] : exclude some attributes. It could be [String], [Map], or [List]
 String toJson(object, {bool parseString: false, depth, exclude}) {
   _serLog.fine("Start serializing");
 
   if (!parseString && object is String) return object;
-  
+
   var result = JSON.encode(objectToSerializable(object, depth: depth, exclude: exclude));
 
   _serializedStack.clear();
@@ -43,10 +43,10 @@ Map toMap(object, {depth, exclude, String fieldName}) =>
 
 /// Converts the [object] to a serializable [Map], [String], [int], [DateTime]
 /// or any other serializiable object.
-/// 
+///
 /// Parameters:
-/// 
-/// * [depth] :  determines how deep is going to be the serialization and to avoid cyclical object reference stack overflow. 
+///
+/// * [depth] :  determines how deep is going to be the serialization and to avoid cyclical object reference stack overflow.
 /// * [exclude] : exclude some attributes. It could be [String], [Map], or [List]
 Object objectToSerializable(object, {depth, exclude, String fieldName}) {
   if (isPrimitive(object)) {
@@ -114,7 +114,7 @@ Object _serializeObject(obj, depth, exclude, fieldName) {
 
       _serializedStack[obj] = result;
     }
-    
+
     if (_isCiclical(obj, instMirror)) {
       if (publicVariables['id'] == null) {
         result['hashcode'] = obj.hashCode;
@@ -194,8 +194,8 @@ _getNext(excludeOrDepth, String fieldName) {
     excludeOrDepth = excludeOrDepth.firstWhere((e) => //
         e == fieldName || e is Map && e.keys.contains(fieldName), orElse: () => null);
   }
-  
+
   if(excludeOrDepth is Map) return excludeOrDepth[fieldName];
-  
+
   if(excludeOrDepth is String && excludeOrDepth == fieldName) return excludeOrDepth;
 }

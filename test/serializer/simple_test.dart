@@ -87,14 +87,14 @@ main() {
       String str = toJson(map);
       expect(str, '{"itsAmap":{"key1":1,"key2":"val"},"itsAarray":[1,2,3],"keyk":"valo"}');
     });
-    
+
     test('serialize: simple object', () {
       var obj = {
         "test": "test"
       };
       JustObject test = new JustObject();
       test.object = obj;
-      
+
       expect(toJson(test), '{"object":{"test":"test"}}');
     });
 

@@ -8,7 +8,7 @@ This library was initially a fork from [Dartson](https://github.com/eredo/dartso
 
  * Dartson uses custom transformers to convert objects to JSON. This produce faster and smaller code after dart2Js. Instead DSON uses reflectable library and transformer. This should produce code as fast and small as Dartson transformer.
  * DSON has the ability to serialize cyclical objects by mean of `depth` parameter, which allows users to specify how deep in the object graph they want to serialize.
- * DSON has the ability to exclude attributes for serialziation in two ways. 
+ * DSON has the ability to exclude attributes for serialziation in two ways.
   * Using `@ignore` over every attribute. This make excluding attributes too global and hardcoded, so users can only specify one exclusion schema.
   * Using `exclude` map as parameter for `serialize` method. This is more flexible, since it allows to have many exclusion schemas for serialization.
  * DSON uses the annotation `@serializable` instead `@entity` which is used by Dartson.
@@ -30,7 +30,7 @@ class Person {
 
   @SerializedName("renamed")
   String otherName;
-  
+
 
   @ignore
   String notVisible;
@@ -74,7 +74,7 @@ class Person {
 
   @SerializedName("renamed")
   String otherName;
-  
+
 
   @ignore
   String notVisible;
@@ -114,9 +114,9 @@ class Employee {
   int id;
   String firstName;
   String lastName;
-  
+
   Address address;
-  
+
   Employee manager;
 }
 
@@ -128,7 +128,7 @@ class Address {
   String city;
   String country;
   String postalCode;
-  
+
   Employee owner;
 }
 
@@ -156,11 +156,11 @@ void main() {
     ..city = 'Miami'
     ..country = 'USA'
     ..owner = employee;
-    
+
   print(toJson(employee)); //will print: '{"id":2,"firstName":"Luis","lastName":"Vargas","address":{"id":2},"manager":{"id":1}}'
-  
+
   print(toJson(employee.address)); // will print: '{"id":2,"street":"some street","city":"Miami","country":"USA","owner":{"id":2}}'
-  
+
   // depth is a optional parameter that could be a list that should contains strings or Maps<String, Map>
   print(toJson(employee, depth: ['address']));
   /* will print:
@@ -168,7 +168,7 @@ void main() {
               '"address":{"id":2,"street":"some street","city":"Miami","country":"USA","owner":{"id":2}},'
               '"manager":{"id":1}}'
   */
-  
+
   print(toJson(employee, depth: [{'manager': ['address']}, 'address']));
   /* will print:
          '{"id":2,"firstName":"Luis","lastName":"Vargas",'
@@ -192,7 +192,7 @@ import 'package:dson/dson.dart';
 class Student {
   int id;
   String name;
-  
+
   List<Course> courses;
 }
 
@@ -200,14 +200,14 @@ class Student {
 @cyclical
 class Course {
   int id;
-  
+
   DateTime beginDate;
-  
+
   List<Student> students;
 }
 
 void main() {
-  
+
   var student1 = new Student()
       ..id = 1
       ..name = 'student1',
@@ -229,13 +229,13 @@ void main() {
       ..id = 3
       ..beginDate = new DateTime.utc(2015, 1, 3)
       ..students = [student1, student3];
-  
+
   student1.courses = [course1, course3];
   student2.courses = [course1, course2];
   student3.courses = [course2, course3];
-  
-  var students = [student1, student2, student3]; 
-  
+
+  var students = [student1, student2, student3];
+
   print(toJson(student1)); // will print: '{"id":1,"name":"student1","courses":[{"id":1},{"id":3}]}'
 
   print(toJson(student1, depth: ['courses']));
@@ -250,16 +250,16 @@ void main() {
       '}');
    */
 
-  print(toJson(student1.courses)); 
+  print(toJson(student1.courses));
   /* will print:
       '['
         '{"id":1,"beginDate":"2015-01-01T00:00:00.000Z","students":[{"id":1},{"id":2}]},'
         '{"id":3,"beginDate":"2015-01-03T00:00:00.000Z","students":[{"id":1},{"id":3}]}'
       ']');
   */
-  
+
   print(toJson(student2.courses, depth: ['students']));
-  /* will print: 
+  /* will print:
       '['
         '{"id":1,"beginDate":"2015-01-01T00:00:00.000Z","students":['
           '{"id":1,"name":"student1","courses":[{"id":1},{"id":3}]},'
@@ -273,7 +273,7 @@ void main() {
    */
 }
 ```
-    
+
 Without the annotation `@cyclical` the program is going to throw a stack overflow error caused by the serializing of cyclical objects.
 
 ### Excluding attributes from being serialized
@@ -292,7 +292,7 @@ import 'package:dson/dson.dart';
 class Student {
   int id;
   String name;
-  
+
   List<Course> courses;
 }
 
@@ -300,14 +300,14 @@ class Student {
 @cyclical
 class Course {
   int id;
-  
+
   DateTime beginDate;
-  
+
   List<Student> students;
 }
 
 void main() {
-  
+
   var student1 = new Student()
       ..id = 1
       ..name = 'student1',
@@ -329,13 +329,13 @@ void main() {
       ..id = 3
       ..beginDate = new DateTime.utc(2015, 1, 3)
       ..students = [student1, student3];
-  
+
   student1.courses = [course1, course3];
   student2.courses = [course1, course2];
   student3.courses = [course2, course3];
-  
-  var students = [student1, student2, student3]; 
-  
+
+  var students = [student1, student2, student3];
+
   print(toJson(student1)); // will print: '{"id":1,"name":"student1","courses":[{"id":1},{"id":3}]}'
 
   print(toJson(student1, depth: 'courses', exclude: 'name'));
@@ -349,16 +349,16 @@ void main() {
       '}');
    */
 
-  print(toJson(student1.courses, exclude: 'beginDate')); 
+  print(toJson(student1.courses, exclude: 'beginDate'));
   /* will print:
       '['
         '{"id":1,"students":[{"id":1},{"id":2}]},'
         '{"id":3,"students":[{"id":1},{"id":3}]}'
       ']');
   */
-  
+
   print(toJson(student2.courses, depth: 'students', exclude: {'students': 'name'}));
-  /* will print: 
+  /* will print:
       '['
         '{"id":1,"beginDate":"2015-01-01T00:00:00.000Z","students":['
           '{"id":1,"courses":[{"id":1},{"id":3}]},'
@@ -370,9 +370,9 @@ void main() {
         ']}'
       ']'
    */
-   
+
    print(toJson(student2.courses, depth: 'students', exclude: ['beginDate', {'students': 'name'}]));
-  /* will print: 
+  /* will print:
       '['
         '{"id":1,"students":['
           '{"id":1,"courses":[{"id":1},{"id":3}]},'
@@ -400,27 +400,27 @@ import 'package:dson/dson.dart';
 class EntityClass {
   String name;
   String _setted;
-  
+
   @SerializedName("renamed")
   bool otherName;
-  
+
   @ignore
   String notVisible;
-  
+
   List<EntityClass> children;
-  
+
   set setted(String s) => _setted = s;
   String get setted => _setted;
 }
 
 void main() {
   EntityClass object = fromJson('{"name":"test","renamed":true,"notVisible":"it is", "setted": "awesome"}', EntityClass);
-  
+
   print(object.name); // > test
   print(object.otherName); // > blub
   print(object.notVisible); // > it is
   print(object.setted); // > awesome
-  
+
   // to deserialize a list of items use [fromJsonList]
   List<EntityClass> list = fromJsonList('[{"name":"test", "children": [{"name":"child1"},{"name":"child2"}]},{"name":"test2"}]', EntityClass);
   print(list.length); // > 2

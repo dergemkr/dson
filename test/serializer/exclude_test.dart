@@ -83,19 +83,19 @@ main() {
     test('firstName', () {
       expect(toJson(manager, exclude: 'firstName'), '{"id":1,"lastName":"Doe","address":{"id":1}}');
     });
-    
+
     test('firstName and lastName', () {
       expect(toJson(manager, exclude: ['firstName', 'lastName']), '{"id":1,"address":{"id":1}}');
     });
-    
+
     test('address.street without depth', () {
       expect(toJson(manager, exclude: {'address': 'street'}), '{"id":1,"firstName":"Jhon","lastName":"Doe","address":{"id":1}}');
     });
-    
+
     test('address.street with depth', () {
       expect(toJson(manager, exclude: {'address': 'street'}, depth: 'address'), '{"id":1,"firstName":"Jhon","lastName":"Doe","address":{"id":1,"city":"Miami","country":"USA","owner":{"id":1}}}');
     });
-    
+
     test('address.street and address.city with depth', () {
       expect(toJson(manager, exclude: {'address': ['street', 'city']}, depth: 'address'), '{"id":1,"firstName":"Jhon","lastName":"Doe","address":{"id":1,"country":"USA","owner":{"id":1}}}');
     });
