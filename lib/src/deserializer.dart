@@ -308,6 +308,22 @@ Object _initiateClass(ClassMirror classMirror, [filler]) {
     return (classMirror.invokeGetter('values') as List)[filler];
   }
 
+  var subtypeData = _hasSubtypesExaminer.type(classMirror).values;
+  if (subtypeData.length > 1) {
+    throw new StateError('${classMirror.simpleName} declares multiple sets of subtypes');
+  } else if (subtypeData.length == 1) {
+    var subtypeInfo = subtypeData.single;
+    var typeId = filler[subtypeInfo.key].toLowerCase();
+    var subtypeMirrors = subtypeInfo.types.map((type) => serializable.reflectType(type));
+    var subtypeMirror = subtypeMirrors.singleWhere((subtypeMirror) {
+      // TODO: Make sure this subtype annotation links back to the correct class
+      // TODO: Prettify errors for multiple subtype annotations
+      var subtypeInfo = _isSubtypeExaminer.type(subtypeMirror).value;
+      return subtypeInfo.id.toLowerCase() == typeId;
+    });
+    return _initiateClass(subtypeMirror, filler);
+  }
+
   String constrMethod = null;
   List parameters = [];
 
